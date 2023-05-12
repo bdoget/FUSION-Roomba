@@ -14,10 +14,10 @@ public:
     float x, y;
     float dir;
     /*
-    (0,0) = origin, in ft x ft
+    (0,0) = origin, in 
     0rad = north, 90deg = east, 
     */
-    void init(int enA_, int in1_, int in2_, int enB, int in3_, int in4_);
+    TwoWheel(int enA_, int in1_, int in2_, int enB, int in3_, int in4_);
     void calibrate(float dist, float turn, float dTime=1, float tTime=1);
     // distTimed = dist of rumba at maxspeed for 1 sec
     // turnTimed = radians turned of rumba at maxspeed for 1 sec
