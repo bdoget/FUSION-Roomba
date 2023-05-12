@@ -2,7 +2,10 @@
 #include "Arduino.h"
 
 // ---------------------------------------------------------------------------
-void Wheel::init(int enA_, int in1_, int in2_)
+Wheel::Wheel() {
+}
+
+Wheel::Wheel(int enA_, int in1_, int in2_)
 {
     enA = enA_;
     in1 = in1_;
@@ -15,7 +18,7 @@ void Wheel::init(int enA_, int in1_, int in2_)
 
 void Wheel::moveSpeed(int speed)
 {
-    // Serial.print(speed);
+    Serial.print(speed);
     analogWrite(enA, speed);
     if (speed >= 0) {
         digitalWrite(in1, HIGH);

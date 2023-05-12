@@ -1,14 +1,13 @@
 #include "TwoWheel.h"
+#include "Wheel.h"
 #include "Arduino.h"
 
 // ---------------------------------------------------------------------------
 
-void TwoWheel::init(int enA_, int in1_, int in2_, int enB_, int in3_, int in4_)
-{
-    left = Wheel();
-    left.init(enA_, in1_, in2_);
-    right = Wheel();
-    right.init(enB_, in3_, in4_);
+TwoWheel::TwoWheel(int enA_, int in1_, int in2_, int enB_, int in3_, int in4_) {
+    
+    left = Wheel(enA_, in1_, in2_);
+    right = Wheel(enB_, in3_, in4_);
 
     mSpeed = 0;
     tSpeed = 0;
@@ -43,12 +42,12 @@ void TwoWheel::update(unsigned long newTime)
     // current time - last time * speed & dir
     if (currSpeed > 0)
     {
-        x += mSpeed * cos(dir);
+        x += mSpeed * cos(dir); // currSpeed
         y += mSpeed * sin(dir);
     }
     else if (currTSpeed > 0)
     {
-        dir += currTSpeed;
+        dir += fmod(currTSpeed,((double) PI));
         // currT
     }
 }
@@ -67,6 +66,8 @@ void TwoWheel::moveForward()
     left.moveSpeed(mSpeed);
     right.moveSpeed(mSpeed);
 
+    Serial.print(mSpeed);
+    
     currSpeed = mSpeed;
     currTSpeed = 0;
 }
