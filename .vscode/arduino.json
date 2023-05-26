@@ -1,4 +1,3 @@
 {
-    "board": "arduino:avr:uno",
-    "sketch": "rumba_demo/rumba_demo.ino"
+    "board": "arduino:avr:uno"
 }

@@ -4,7 +4,7 @@
 
 // ---------------------------------------------------------------------------
 
-Map::Map(float heightA, float widthA, float pickupA, float rumbaA) {
+void Map::init(float heightA, float widthA, float pickupA, float rumbaA) {
     height = heightA;
     width = widthA;
     pickup = pickupA;

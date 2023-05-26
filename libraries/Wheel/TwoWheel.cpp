@@ -4,7 +4,7 @@
 
 // ---------------------------------------------------------------------------
 
-TwoWheel::TwoWheel(int enA_, int in1_, int in2_, int enB_, int in3_, int in4_) {
+void TwoWheel::init(int enA_, int in1_, int in2_, int enB_, int in3_, int in4_) {
     
     left = Wheel(enA_, in1_, in2_);
     right = Wheel(enB_, in3_, in4_);
@@ -97,6 +97,26 @@ void TwoWheel::moveRight()
 
     currSpeed = 0;
     currTSpeed = tSpeed;
+}
+
+void TwoWheel::moveChar(char code) {
+    switch (code) {
+    case 'f':
+        moveForward();
+        break;
+    case 'b':
+        moveBackward();
+        break;
+    case 'l':
+        moveLeft();
+        break;
+    case 'r':
+        moveRight();
+        break;
+    case 's':
+        moveStop();
+        break;
+    }
 }
 
 // # Debugs and gets

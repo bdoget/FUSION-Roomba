@@ -8,15 +8,10 @@ class Map {
 
 public:
     // all in inches
-    Map(float heightA, float widthA, float pickupA, float rumbaA);
+    void init(float heightA, float widthA, float pickupA, float rumbaA);
 
-    char getDir(float x, float y, float dir);
+    char getDir(float x, float y, float dir); // return char f,b,s,l,r
     bool onPath (float x, float y);
-    
-    
-
-    // char getDir(posX, posY); // return char f,b,s,l,r
-    // bool onPath (posX, posY);
     
 private:
     struct Coord {
