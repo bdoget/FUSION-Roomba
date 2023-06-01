@@ -10,8 +10,7 @@
 
 class Wheel {
 public:
-    Wheel();
-    Wheel(int enA_, int in1_, int in2_);
+    void init(int enA_, int in1_, int in2_);
     void moveSpeed(int speed);
 
     // maybe add acceleration and deceleration function

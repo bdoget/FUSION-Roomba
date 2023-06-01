@@ -1,27 +1,30 @@
-#include "Map.h"
+#include "PathBrain.h"
 #include "Arduino.h"
 
 
 // ---------------------------------------------------------------------------
 
-void Map::init(float heightA, float widthA, float pickupA, float rumbaA) {
+void PathBrain::init(float heightA, float widthA, float pickupA, float rumbaA) {
     height = heightA;
     width = widthA;
     pickup = pickupA;
     rumba = rumbaA;
 
-    mode = 's';
+    mode = 'o';
 };
 
-char Map::getDir(float x, float y, float dir) {
+char PathBrain::getDir(float x, float y, float dir) {
     Coord user {x,y};
     if (mode == 'o') {
         return goToPoint(user, dir, Coord{0,0});
     }
-    return '1';
+    if (mode == 's') {
+        return 's';
+    }
+    return '2';
 };
 
-bool Map::onPath(float x, float y) {
+bool PathBrain::onPath(float x, float y) {
     float k = (x - rumba/2)/(pickup-overlap);
     if (k == floor(k))
         return true; // on the vertical line
@@ -32,7 +35,7 @@ bool Map::onPath(float x, float y) {
     // float tempX 
 };
 
-Map::Coord Map::nearestPoint(float x, float y) {
+PathBrain::Coord PathBrain::nearestPoint(float x, float y) {
     float k = (x - rumba / 2) / (pickup - overlap);
 
     Coord left{floor(k) * (pickup - overlap) + (rumba / 2), y};
@@ -53,27 +56,28 @@ Map::Coord Map::nearestPoint(float x, float y) {
 
 };
 
-float Map::dist(Map::Coord c1, Map::Coord c2) {
+float PathBrain::dist(PathBrain::Coord c1, PathBrain::Coord c2) {
     float x2 = (c1.x - c2.x) * (c1.x - c2.x);
     float y2 = (c1.y - c2.y) * (c1.y - c2.y);
     return sqrt(x2 + y2);
 };
 
-float Map::getDir(Map::Coord user, Map::Coord target) {
+float PathBrain::getDirC(PathBrain::Coord user, PathBrain::Coord target) {
     return fmod(atan2(target.y - user.y, target.x - user.x) + PI, PI);
 };
 
 
-char Map::goToPoint(Map::Coord user, float dir, Map::Coord tar) {
+char PathBrain::goToPoint(PathBrain::Coord user, float dir, PathBrain::Coord tar) {
     /*
         Rotate and go forward to tar until user == tar
     */
 
     if (user.x == tar.y && user.y == tar.y) 
         return 's';
-    if (dir != getDir(user,tar)) {
-        float left = fmod(getDir(user, tar) + PI - dir,PI);
-        float right = fmod(dir + PI - getDir(user,tar),PI);
+    if (dir != getDirC(user,tar)) {
+        Serial.print(getDirC(user,tar));
+        float left = fmod(getDirC(user, tar) + PI - dir,PI);
+        float right = fmod(dir + PI - getDirC(user,tar),PI);
         if (left < right)
             return 'l';
         return 'r';

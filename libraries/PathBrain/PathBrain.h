@@ -1,12 +1,13 @@
-#ifndef Map_H
-#define Map_H
+#ifndef PathBrain_H
+#define PathBrain_H
 
 // #if (ARDUINO >= 100)
 #include <Arduino.h>
 
-class Map {
+class PathBrain {
 
 public:
+    // Map() {};
     // all in inches
     void init(float heightA, float widthA, float pickupA, float rumbaA);
 
@@ -33,7 +34,7 @@ private:
 
     Coord nearestPoint(float x, float y);
     float dist(Coord x, Coord y);
-    float getDir(Coord user, Coord target);
+    float getDirC(Coord user, Coord target);
     char goToPoint(Coord user, float dir, Coord tar);
 
 };

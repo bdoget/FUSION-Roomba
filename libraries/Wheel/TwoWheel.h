@@ -1,31 +1,27 @@
 #ifndef TwoWheel_H
 #define TwoWheel_H
 
-// #if (ARDUINO >= 100)
 #include <Arduino.h>
 #include "Wheel.h"
-// #else
-// #include <WProgram.h>
-// #endif
 
 class TwoWheel
 {
 public:
-    float x, y;
-    float dir;
+    double x, y;
+    double dir;
     /*
     (0,0) = origin, in 
-    0rad = north, 90deg = east, 
+    0rad = east, 90deg = north
     */
     void init(int enA_, int in1_, int in2_, int enB, int in3_, int in4_);
-    void calibrate(float dist, float turn, float dTime=1, float tTime=1);
+    void calibrate(double dist, double turn, double dTime=1, double tTime=1);
     // distTimed = dist of rumba at maxspeed for 1 sec
     // turnTimed = radians turned of rumba at maxspeed for 1 sec
 
-    bool setSpeeds(float move, float turn); // move (ft/sec), turn (rad/sec)
-    void setPos(float x_, float y_, float dir_);
+    bool setSpeeds(double move, double turn); // move (inches/sec), turn (rad/sec)
+    void setPos(double x_, double y_, double dir_);
 
-    void update(unsigned long newTime);
+    void update();
 
 // Basic move functions
     void moveStop();
@@ -37,22 +33,23 @@ public:
 
 
 // Debug - gets
-    float getSpeed();
-    float getTurnSpeed();
+    double getSpeed();
+    double getTurnSpeed();
     int getPinSpeed();
     int getPinTurnSpeed();
     void setPinSpeeds(int move, int turn);
+    void print();
 
     void calibrateMode();
 
 private:
     Wheel left, right;
     
-    float maxMoveSpeed, maxTurnSpeed;
+    double maxMoveSpeed, maxTurnSpeed;
     // maxMoveSpeed in ft/sec 
     // maxTurnSpeed in rad/sec
 
-    float setRealMoveSpeed, setRealTurnSpeed;
+    double realMSpeed, realTSpeed;
     // real set speeds from setSpeeds(float, float)
 
     int mSpeed, tSpeed;
@@ -62,6 +59,12 @@ private:
     // currSpeed = mSpeed when moving or 0 when stopped or turning
     // currTSpeed = tSpeed when turning or 0 when moving or stopped
     // PWM signal strengths
+
+
+    // float maxMSpeed, maxTSpeed; // ft/sec, rad/sec
+    // float setMSpeed, setTSpeed; // ft/sec, rad/sec
+    // int setPinMSpeed, setPinTSpeed; // 0-255
+    // int mSpeed, tSpeed; // 0-255 current speed
 
     unsigned long currTime;
 };
