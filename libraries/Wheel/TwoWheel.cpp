@@ -45,11 +45,13 @@ void TwoWheel::update()
 
     // current time - last time * speed & dir
     if (currSpeed != 0) {
-        x += realMSpeed * cos(dir) * dTime; // currSpeed
-        y += realMSpeed * sin(dir) * dTime;
+        int dirMult = (currSpeed > 0) ? 1 : -1;
+        x += realMSpeed * cos(dir) * dTime * dirMult; // currSpeed
+        y += realMSpeed * sin(dir) * dTime * dirMult;
     }
     else if (currTSpeed != 0) {
-        dir += (realTSpeed * dTime) + 2*PI;
+        int dirTMult = (currTSpeed > 0) ? 1 : -1;
+        dir += (realTSpeed * dTime * dirTMult) + 2*PI;
         // dir += fmod(realTSpeed, ((double) PI));
         dir = fmod(dir, ((double) 2*PI));
     }
@@ -158,7 +160,7 @@ void TwoWheel::print() {
             Serial.print("Forward");
     }
     else if (currTSpeed != 0) {
-        if (currTSpeed < 0)
+        if (currTSpeed > 0)
             Serial.print("Left");
         else
             Serial.print("Right");

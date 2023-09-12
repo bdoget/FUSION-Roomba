@@ -14,6 +14,8 @@ TwoWheel rumba;
     Plug the distance moved and angle rotated into the calibration function
     for the rumba class.
     Ex: rumba.calibrate(2.54, 4); // moved 2.54 ft in 1 sec, 4 rads in 1 sec
+    Ex: rumba.calibrate(3ft, 2.05PI rad); // moved 2.54 ft in 1 sec, 4 rads in 1 sec
+    Ex: rumba.calibrate(360, 2.05*PI); // moved 2.54 ft in 1 sec, 4 rads in 1 sec
 
     ** NOTE: ** 
         Measure the distance in INCHES and angle in RADIANS.
@@ -23,14 +25,14 @@ void setup()
 {
     Serial.begin(9600);
     Serial.println("Start Setup");
-    rumba.init(3, 4, 5, 6, 7, 8);
+    rumba.init(A0, 4, 5, A1, 7, 8);
     rumba.calibrateMode();
     Serial.println("Done Setup");
 
     delay(1000);
     startT = millis();
-    rumba.moveForward();
-    // rumba.moveLeft();
+    // rumba.moveForward();
+    rumba.moveLeft();
 }
 
 void loop() {

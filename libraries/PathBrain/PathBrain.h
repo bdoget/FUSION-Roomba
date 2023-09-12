@@ -1,7 +1,6 @@
 #ifndef PathBrain_H
 #define PathBrain_H
 
-// #if (ARDUINO >= 100)
 #include <Arduino.h>
 
 class PathBrain {
@@ -9,15 +8,20 @@ class PathBrain {
 public:
     // Map() {};
     // all in inches
-    void init(float heightA, float widthA, float pickupA, float rumbaA);
+    void init(double heightA, double widthA, double pickupA, double rumbaA);
 
-    char getDir(float x, float y, float dir); // return char f,b,s,l,r
-    bool onPath (float x, float y);
+    char getDir(double x, double y, double dir); // return char f,b,s,l,r
+    bool onPath (double x, double y);
+    
+    void getTolerance(double moveTolA, double turnTolA);
+
+    bool isEqual(double a, double b, double tol);
+    bool isGreater(double a, double b, double tol);
     
 private:
     struct Coord {
-        float x;
-        float y;
+        double x;
+        double y;
 
     };
 
@@ -29,13 +33,14 @@ private:
             g = go to nearest point
             s = stop
         */
-    float height, width, pickup, rumba;
-    float overlap = 1;
+    double height, width, pickup, rumba;
+    double overlap = 1;
+    double moveTol, turnTol;
 
-    Coord nearestPoint(float x, float y);
-    float dist(Coord x, Coord y);
-    float getDirC(Coord user, Coord target);
-    char goToPoint(Coord user, float dir, Coord tar);
+    Coord nearestPoint(double x, double y);
+    double dist(Coord x, Coord y);
+    double getDirCoords(Coord user, Coord target);
+    char goToPoint(Coord user, double dir, Coord tar);
 
 };
 

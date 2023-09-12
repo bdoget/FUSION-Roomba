@@ -4,39 +4,91 @@
 
 // ---------------------------------------------------------------------------
 
-void PathBrain::init(float heightA, float widthA, float pickupA, float rumbaA) {
+void PathBrain::init(double heightA, double widthA, double pickupA, double rumbaA) {
     height = heightA;
     width = widthA;
     pickup = pickupA;
     rumba = rumbaA;
 
+    moveTol = 0.05;
+    turnTol = 0.05;
     mode = 'o';
 };
 
-char PathBrain::getDir(float x, float y, float dir) {
+void PathBrain::getTolerance(double moveTolA, double turnTolA) {
+    moveTol = moveTolA;
+    turnTol = turnTolA; 
+}
+
+bool PathBrain::isEqual(double a, double b, double tol) {
+    if (abs(a - b) < tol)
+        return true;
+    return false;
+}
+
+bool PathBrain::isGreater(double a, double b, double tol) {// a > b
+    if (a > b - tol)
+        return true;
+    return false;
+}
+
+char PathBrain::getDir(double x, double y, double dir) {
     Coord user {x,y};
-    if (mode == 'o') {
-        return goToPoint(user, dir, Coord{0,0});
+
+    if (onPath(x,y)) {
+        // go dir
+    } else {
+        return goToPoint(user,dir,Coord{0,0});
+        // go to nearest point
     }
-    if (mode == 's') {
-        return 's';
-    }
-    return '2';
+
+
+    // Serial.print("hi");
+
+    // onPath
+    Serial.print(onPath(x,y));
+    Serial.print("|");
+    Coord tar = nearestPoint(x,y);
+    Serial.print(tar.x);
+    Serial.print("|");
+    Serial.print(tar.y);
+    Serial.print("|");
+    // if (onPath(x,y)) {
+    //     Serial.print("onPath");
+    //     Coord tar = nearestPoint(x,y);
+    //     return goToPoint(user, dir, tar);
+    // }
+    // return 's';
+    return goToPoint(user,dir,Coord{0,0});
+    
+    // if (mode == 'o') {
+    //     return goToPoint(user, dir, Coord{0,0});
+    // }
+    // if (mode == 's') {
+    //     return 's';
+    // }
+    // return '2';
 };
 
-bool PathBrain::onPath(float x, float y) {
-    float k = (x - rumba/2)/(pickup-overlap);
-    if (k == floor(k))
-        return true; // on the vertical line
-    if (floor(k) / 2 == 0 && y == height - (rumba / 2))
-        return true; // on the top horizontal
-    if (floor(k) / 2 == 1 && y == (rumba / 2))
-        return true; // on the bottom horizontal
-    // float tempX 
+bool PathBrain::onPath(double x, double y) {
+    Coord nearestPt = nearestPoint(x,y);
+    if (isEqual(x, nearestPt.x, moveTol) && isEqual(y, nearestPt.y, moveTol))
+        return true;
+    return false;
+
+    // double k = (x - rumba/2)/(pickup-overlap);
+    // if (k == floor(k))
+    //     return true; // on the vertical line
+    // if (floor(k) / 2 == 0 && y == height - (rumba / 2))
+    //     return true; // on the top horizontal
+    // if (floor(k) / 2 == 1 && y == (rumba / 2))
+    //     return true; // on the bottom horizontal
+    // // double tempX 
+    // return false;
 };
 
-PathBrain::Coord PathBrain::nearestPoint(float x, float y) {
-    float k = (x - rumba / 2) / (pickup - overlap);
+PathBrain::Coord PathBrain::nearestPoint(double x, double y) {
+    double k = (x - rumba / 2) / (pickup - overlap);
 
     Coord left{floor(k) * (pickup - overlap) + (rumba / 2), y};
     Coord right{(floor(k)+1)*(pickup-overlap) + (rumba/2), y};
@@ -56,31 +108,37 @@ PathBrain::Coord PathBrain::nearestPoint(float x, float y) {
 
 };
 
-float PathBrain::dist(PathBrain::Coord c1, PathBrain::Coord c2) {
-    float x2 = (c1.x - c2.x) * (c1.x - c2.x);
-    float y2 = (c1.y - c2.y) * (c1.y - c2.y);
+double PathBrain::dist(PathBrain::Coord c1, PathBrain::Coord c2) {
+    double x2 = (c1.x - c2.x) * (c1.x - c2.x);
+    double y2 = (c1.y - c2.y) * (c1.y - c2.y);
     return sqrt(x2 + y2);
 };
 
-float PathBrain::getDirC(PathBrain::Coord user, PathBrain::Coord target) {
-    return fmod(atan2(target.y - user.y, target.x - user.x) + PI, PI);
+double PathBrain::getDirCoords(PathBrain::Coord user, PathBrain::Coord target) {
+    return fmod(atan2(target.y - user.y, target.x - user.x) + 2*PI, 2*PI);
 };
 
 
-char PathBrain::goToPoint(PathBrain::Coord user, float dir, PathBrain::Coord tar) {
+char PathBrain::goToPoint(PathBrain::Coord user, double dir, PathBrain::Coord tar) {
     /*
         Rotate and go forward to tar until user == tar
     */
 
-    if (user.x == tar.y && user.y == tar.y) 
+    if (isEqual(user.x, tar.x, moveTol) && isEqual(user.y, tar.y, moveTol)) {
+        Serial.print("user == tar");
         return 's';
-    if (dir != getDirC(user,tar)) {
-        Serial.print(getDirC(user,tar));
-        float left = fmod(getDirC(user, tar) + PI - dir,PI);
-        float right = fmod(dir + PI - getDirC(user,tar),PI);
+    }
+
+    double targetVector = getDirCoords(user, tar);
+    if (!isEqual(dir, targetVector,turnTol)) {
+        // Serial.print(getDirCoords(user,tar));
+        double left = fmod(targetVector - dir + 2*PI,2*PI);
+        double right = fmod(dir - targetVector + 2 * PI, 2 * PI);
         if (left < right)
             return 'l';
         return 'r';
     }
+
     return 'f';
 };
+

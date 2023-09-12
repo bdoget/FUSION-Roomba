@@ -11,16 +11,16 @@ void setup() {
   Serial.println("Start Setup");
 
   rumba.init(3, 4, 5, 6, 7, 8);
-  rumba.calibrate(12,PI); // 1ft in 1 sec, PI rad in 1 sec
-  rumba.setSpeeds(12,PI);
-  rumba.setPos(0,0,-PI/4);
+  rumba.calibrate(12,2*PI); // 1ft in 1 sec, PI rad in 1 sec
+  rumba.setSpeeds(12,1.5*PI);
+  rumba.setPos(0,0,0);
 
   // rumba.setPinSpeeds(100,100);
 
   Serial.println("Done Setup");
   startT = millis();
   
-  rumba.moveForward();
+  rumba.moveStop();
 }
 
 void loop() {
